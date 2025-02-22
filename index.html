@@ -4,28 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tạo mã QR với hình nền</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h2>Tạo mã QR với hình nền</h2>
 
-    <!-- Nhập link VietQR -->
-    <input type="text" id="vietqr" placeholder="Nhập link VietQR">
-    <button onclick="generateQR()">Tạo mã QR</button>
+    <div class="container">
+        <h2>✨ Tạo mã QR với Hình Nền ✨</h2>
 
-    <br><br>
+        <label for="vietqr">🔗 Nhập link VietQR:</label>
+        <input type="text" id="vietqr" placeholder="Dán link VietQR tại đây...">
+        <button class="btn led-rgb" onclick="generateQR()">🚀 Tạo mã QR</button>
 
-    <!-- Chọn ảnh nền -->
-    <input type="file" id="uploadImage">
-    <br><br>
+        <label for="uploadImage">🖼️ Chọn ảnh nền:</label>
+        <input type="file" id="uploadImage" accept="image/*">
 
-    <!-- Hiển thị mã QR tải từ VietQR -->
-    <img id="qrVietQR" style="display: none;">
-    
-    <!-- Canvas để hiển thị kết quả -->
-    <canvas id="qrCanvas"></canvas>
+        <div class="preview-container">
+            <canvas id="qrCanvas"></canvas>
+        </div>
 
-    <br>
-    <button onclick="downloadQR()">Tải xuống</button>
+        <button class="btn led-rgb" onclick="downloadQR()">📥 Tải xuống</button>
+    </div>
 
     <!-- Thư viện đọc QR -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js"></script>
@@ -35,34 +33,13 @@
     <script>
         async function generateQR() {
             let vietqr = document.getElementById("vietqr").value;
-            let qrImage = document.getElementById("qrVietQR");
+            if (!vietqr) {
+                alert("Vui lòng nhập link VietQR!");
+                return;
+            }
 
-            // Tải mã QR từ VietQR
-            qrImage.src = vietqr;
-            qrImage.crossOrigin = "Anonymous";
-
-            qrImage.onload = function () {
-                // Đọc QR Data
-                let canvas = document.createElement("canvas");
-                let ctx = canvas.getContext("2d");
-                canvas.width = qrImage.width;
-                canvas.height = qrImage.height;
-                ctx.drawImage(qrImage, 0, 0, qrImage.width, qrImage.height);
-
-                let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                let qrData = jsQR(imageData.data, canvas.width, canvas.height);
-                
-                if (qrData) {
-                    createNewQR(qrData.data);
-                } else {
-                    alert("Không đọc được mã QR");
-                }
-            };
-        }
-
-        function createNewQR(data) {
             let qr = new QRious({
-                value: data,
+                value: vietqr,
                 size: 250
             });
 
@@ -94,7 +71,6 @@
                     canvas.height = bgImage.height;
                     ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
 
-                    // Chèn mã QR vào giữa ảnh nền
                     let qrSize = canvas.width / 3;
                     let x = (canvas.width - qrSize) / 2;
                     let y = (canvas.height - qrSize) / 2;
@@ -112,5 +88,6 @@
             link.click();
         }
     </script>
+
 </body>
 </html>
