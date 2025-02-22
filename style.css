@@ -1,0 +1,89 @@
+/* Font chữ đẹp */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: #fff;
+    color: #000;
+    text-align: center;
+    padding: 20px;
+}
+
+.container {
+    max-width: 500px;
+    margin: auto;
+    padding: 20px;
+    border: 3px solid #000;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    background-color: #f9f9f9;
+}
+
+h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0 20px;
+    border: 2px solid #000;
+    border-radius: 5px;
+    font-size: 16px;
+    outline: none;
+}
+
+.preview-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+canvas {
+    border: 2px solid #000;
+    border-radius: 5px;
+}
+
+/* Nút LED RGB */
+.btn {
+    display: inline-block;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    border: 2px solid #000;
+    border-radius: 5px;
+    background: linear-gradient(45deg, red, blue, green, yellow, purple);
+    background-size: 400% 400%;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+    margin-top: 10px;
+}
+
+/* Hiệu ứng hover */
+.btn:hover {
+    animation: glow 1.5s infinite;
+    transform: scale(1.05);
+}
+
+/* Hiệu ứng LED RGB */
+@keyframes glow {
+    0% { box-shadow: 0 0 5px red, 0 0 10px blue, 0 0 15px green; }
+    50% { box-shadow: 0 0 10px yellow, 0 0 15px purple, 0 0 20px cyan; }
+    100% { box-shadow: 0 0 5px red, 0 0 10px blue, 0 0 15px green; }
+}
