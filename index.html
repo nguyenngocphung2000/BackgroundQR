@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tạo mã QR với hình nền</title>
+</head>
+<body>
+    <h2>Tạo mã QR với hình nền</h2>
+
+    <!-- Nhập link VietQR -->
+    <input type="text" id="vietqr" placeholder="Nhập link VietQR">
+    <button onclick="generateQR()">Tạo mã QR</button>
+
+    <br><br>
+
+    <!-- Chọn ảnh nền -->
+    <input type="file" id="uploadImage">
+    <br><br>
+
+    <!-- Hiển thị mã QR tải từ VietQR -->
+    <img id="qrVietQR" style="display: none;">
+    
+    <!-- Canvas để hiển thị kết quả -->
+    <canvas id="qrCanvas"></canvas>
+
+    <br>
+    <button onclick="downloadQR()">Tải xuống</button>
+
+    <!-- Thư viện đọc QR -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js"></script>
+    <!-- Thư viện tạo QR -->
+    <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2"></script>
+
+    <script>
+        async function generateQR() {
+            let vietqr = document.getElementById("vietqr").value;
+            let qrImage = document.getElementById("qrVietQR");
+
+            // Tải mã QR từ VietQR
+            qrImage.src = vietqr;
+            qrImage.crossOrigin = "Anonymous";
+
+            qrImage.onload = function () {
+                // Đọc QR Data
+                let canvas = document.createElement("canvas");
+                let ctx = canvas.getContext("2d");
+                canvas.width = qrImage.width;
+                canvas.height = qrImage.height;
+                ctx.drawImage(qrImage, 0, 0, qrImage.width, qrImage.height);
+
+                let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                let qrData = jsQR(imageData.data, canvas.width, canvas.height);
+                
+                if (qrData) {
+                    createNewQR(qrData.data);
+                } else {
+                    alert("Không đọc được mã QR");
+                }
+            };
+        }
+
+        function createNewQR(data) {
+            let qr = new QRious({
+                value: data,
+                size: 250
+            });
+
+            let newQR = new Image();
+            newQR.src = qr.toDataURL();
+            newQR.onload = function () {
+                drawQROnImage(newQR);
+            };
+        }
+
+        function drawQROnImage(qrImage) {
+            let uploadImage = document.getElementById("uploadImage").files[0];
+
+            if (!uploadImage) {
+                alert("Vui lòng chọn hình nền!");
+                return;
+            }
+
+            let reader = new FileReader();
+            reader.onload = function (event) {
+                let bgImage = new Image();
+                bgImage.src = event.target.result;
+
+                bgImage.onload = function () {
+                    let canvas = document.getElementById("qrCanvas");
+                    let ctx = canvas.getContext("2d");
+
+                    canvas.width = bgImage.width;
+                    canvas.height = bgImage.height;
+                    ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
+
+                    // Chèn mã QR vào giữa ảnh nền
+                    let qrSize = canvas.width / 3;
+                    let x = (canvas.width - qrSize) / 2;
+                    let y = (canvas.height - qrSize) / 2;
+                    ctx.drawImage(qrImage, x, y, qrSize, qrSize);
+                };
+            };
+            reader.readAsDataURL(uploadImage);
+        }
+
+        function downloadQR() {
+            let canvas = document.getElementById("qrCanvas");
+            let link = document.createElement("a");
+            link.download = "QR_with_background.png";
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+    </script>
+</body>
+</html>
